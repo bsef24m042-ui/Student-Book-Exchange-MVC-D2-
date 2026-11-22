@@ -1,0 +1,60 @@
+﻿@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<div class="container mt-5">
+
+    <div class="text-center mb-4">
+        <h1>Admin Dashboard</h1>
+        <p class="text-muted">
+            Welcome to the Student Book Exchange Administration Panel.
+        </p>
+    </div>
+
+    <div class="row g-4">
+
+        <div class="col-md-4">
+            <div class="card shadow h-100">
+                <div class="card-body text-center">
+                    <h4>Manage Books</h4>
+                    <p>Review and manage all book listings.</p>
+                    <a asp-controller="Books"
+                       asp-action="Index"
+                       class="btn btn-primary">
+                        View Books
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow h-100">
+                <div class="card-body text-center">
+                    <h4>User Management</h4>
+                    <p>Administration of platform users.</p>
+                    <span class="badge bg-info">Admin Area</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow h-100">
+                <div class="card-body text-center">
+                    <h4>Platform Overview</h4>
+                    <p>Manage the Student Book Exchange platform.</p>
+                    <span class="badge bg-success">Active</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="text-center mt-5">
+        <form asp-controller="Home" asp-action="Logout" method="post">
+            <button type="submit" class="btn btn-outline-danger">
+                Logout
+            </button>
+        </form>
+    </div>
+
+</div>

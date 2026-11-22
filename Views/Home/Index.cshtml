@@ -1,0 +1,122 @@
+﻿@{
+    ViewData["Title"] = "Home";
+}
+
+<!-- Hero Section -->
+<section class="bg-light rounded-4 p-5 text-center my-4">
+    <span class="badge bg-primary mb-3">Welcome to Student Book Exchange</span>
+
+    <h1 class="display-5 fw-bold mt-2">
+        Your Next Favorite Book<br />
+        Is Already on Campus!
+    </h1>
+
+    <p class="lead text-muted mt-3">
+        Buy, sell, and exchange second-hand academic books with fellow students.
+        Save money and give books a second life.
+    </p>
+
+    <div class="mt-4">
+        <a asp-controller="Books" asp-action="Index"
+           class="btn btn-primary btn-lg me-2">
+            Browse Books
+        </a>
+
+        <a asp-controller="Books" asp-action="Create"
+           class="btn btn-outline-primary btn-lg">
+            Sell Your Book
+        </a>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="my-5">
+    <div class="text-center mb-4">
+        <h2 class="fw-bold">Why Student Book Exchange?</h2>
+        <p class="text-muted">
+            A simple way to make academic resources more affordable.
+        </p>
+    </div>
+
+    <div class="row g-4">
+
+        <!-- Feature 1 -->
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm border-0 text-center p-4">
+                <div class="display-4 mb-3">📚</div>
+                <h4 class="fw-bold">Browse Books</h4>
+                <p class="text-muted">
+                    Find affordable textbooks and study materials
+                    listed by other students.
+                </p>
+                <a asp-controller="Books" asp-action="Index"
+                   class="btn btn-outline-primary mt-auto">
+                    Explore Books
+                </a>
+            </div>
+        </div>
+
+        <!-- Feature 2 -->
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm border-0 text-center p-4">
+                <div class="display-4 mb-3">💰</div>
+                <h4 class="fw-bold">Sell Your Books</h4>
+                <p class="text-muted">
+                    List your used textbooks and connect with
+                    students who need them.
+                </p>
+                <a asp-controller="Books" asp-action="Create"
+                   class="btn btn-outline-primary mt-auto">
+                    List a Book
+                </a>
+            </div>
+        </div>
+
+        <!-- Feature 3 -->
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm border-0 text-center p-4">
+                <div class="display-4 mb-3">♻️</div>
+                <h4 class="fw-bold">Reuse & Save</h4>
+                <p class="text-muted">
+                    Give your books another life while helping
+                    other students save money.
+                </p>
+                <a asp-controller="Books" asp-action="Index"
+                   class="btn btn-outline-primary mt-auto">
+                    Get Started
+                </a>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- How It Works Section -->
+<section class="bg-light rounded-4 p-5 my-5">
+    <h2 class="text-center fw-bold mb-4">How It Works</h2>
+
+    <div class="row text-center g-4">
+
+        <div class="col-md-4">
+            <h5 class="fw-bold">01. Browse</h5>
+            <p class="text-muted">
+                Explore books available from fellow students.
+            </p>
+        </div>
+
+        <div class="col-md-4">
+            <h5 class="fw-bold">02. Connect</h5>
+            <p class="text-muted">
+                Find a book that matches your academic needs.
+            </p>
+        </div>
+
+        <div class="col-md-4">
+            <h5 class="fw-bold">03. Exchange</h5>
+            <p class="text-muted">
+                Contact the seller and arrange your book exchange.
+            </p>
+        </div>
+
+    </div>
+</section>

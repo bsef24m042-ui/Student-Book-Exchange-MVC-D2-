@@ -1,0 +1,66 @@
+﻿@{
+    ViewData["Title"] = "Student Dashboard";
+}
+
+<div class="container mt-5">
+    <div class="text-center mb-4">
+        <h1>Student Dashboard</h1>
+        <p class="text-muted">
+            Welcome to your Student Book Exchange account!
+        </p>
+    </div>
+
+    <div class="row g-4">
+
+        <div class="col-md-4">
+            <div class="card shadow h-100">
+                <div class="card-body text-center">
+                    <h4>Browse Books</h4>
+                    <p>Explore available academic books.</p>
+                    <a asp-controller="Books"
+                       asp-action="Index"
+                       class="btn btn-primary">
+                        Browse Books
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow h-100">
+                <div class="card-body text-center">
+                    <h4>Sell Your Books</h4>
+                    <p>List your used books for other students.</p>
+                    <a asp-controller="Books"
+                       asp-action="Create"
+                       class="btn btn-primary">
+                        Add a Book
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow h-100">
+                <div class="card-body text-center">
+                    <h4>Manage Books</h4>
+                    <p>View and manage book listings.</p>
+                    <a asp-controller="Books"
+                       asp-action="Index"
+                       class="btn btn-primary">
+                        My Books
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="text-center mt-5">
+        <form asp-controller="Home" asp-action="Logout" method="post">
+            <button type="submit" class="btn btn-outline-danger">
+                Logout
+            </button>
+        </form>
+    </div>
+</div>
