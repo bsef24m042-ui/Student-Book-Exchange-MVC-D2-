@@ -1,0 +1,36 @@
+@model IEnumerable<Deliverable_2_StudentBookExchangeMVC.Models.AdminUserViewModel>
+@{
+    ViewData["Title"] = "User Management";
+}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div><span class="eyebrow">ADMINISTRATION</span><h1 class="fw-bold">User Management</h1></div>
+    <a asp-action="Index" class="btn btn-outline-secondary">Back to Dashboard</a>
+</div>
+<div class="card app-card">
+    <div class="table-responsive">
+        <table class="table align-middle mb-0">
+            <thead><tr><th>Email</th><th>Email verified</th><th>Current role</th><th>Change role</th></tr></thead>
+            <tbody>
+            @foreach (var user in Model)
+            {
+                <tr>
+                    <td>@user.Email</td>
+                    <td>@(user.EmailConfirmed ? "Yes" : "No")</td>
+                    <td>@string.Join(", ", user.Roles)</td>
+                    <td>
+                        <form asp-action="SetRole" method="post" class="d-flex gap-2">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="userId" value="@user.Id" />
+                            <select name="role" class="form-select form-select-sm" style="max-width:130px">
+                                <option value="Student">Student</option>
+                                <option value="Admin">Admin</option>
+                            </select>
+                            <button class="btn btn-sm btn-primary" type="submit">Save</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>

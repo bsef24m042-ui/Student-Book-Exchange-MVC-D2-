@@ -3,6 +3,7 @@ using Deliverable_2_StudentBookExchangeMVC.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
 using System.Diagnostics;
+using System.Security.Claims;
 
 namespace Deliverable_2_StudentBookExchangeMVC.Controllers
 {
@@ -53,11 +54,12 @@ namespace Deliverable_2_StudentBookExchangeMVC.Controllers
 
             if (result.Succeeded)
             {
-                // Every public registration gets the Student role
+                // Public registrations always receive the Student role.
                 if (!await _userManager.IsInRoleAsync(user, "Student"))
-                {
                     await _userManager.AddToRoleAsync(user, "Student");
-                }
+
+                // Store the display name as an Identity claim without changing the database schema.
+                await _userManager.AddClaimAsync(user, new Claim("FullName", model.FullName));
 
                 TempData["Success"] =
                     "Account created successfully! Please login.";
@@ -88,11 +90,17 @@ namespace Deliverable_2_StudentBookExchangeMVC.Controllers
                 model.Email,
                 model.Password,
                 model.RememberMe,
-                lockoutOnFailure: false);
+                lockoutOnFailure: true);
 
             if (result.Succeeded)
             {
                 var user = await _userManager.FindByEmailAsync(model.Email);
+                if (user == null)
+                {
+                    await _signInManager.SignOutAsync();
+                    ModelState.AddModelError("", "Unable to load this account.");
+                    return View(model);
+                }
 
                 if (await _userManager.IsInRoleAsync(user, "Admin"))
                     return RedirectToAction("Index", "Admin");
@@ -116,6 +124,11 @@ namespace Deliverable_2_StudentBookExchangeMVC.Controllers
         {
             await _signInManager.SignOutAsync();
             return RedirectToAction("Index");
+        }
+
+        public IActionResult AccessDenied()
+        {
+            return View();
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

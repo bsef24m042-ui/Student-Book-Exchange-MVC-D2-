@@ -1,77 +1,83 @@
-﻿@model IEnumerable<Deliverable_2_StudentBookExchangeMVC.Models.Book>
-
+@model IEnumerable<Deliverable_2_StudentBookExchangeMVC.Models.Book>
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Browse Books";
 }
+<div class="d-flex flex-wrap justify-content-between align-items-end gap-3 mb-4">
+    <div><span class="eyebrow">CAMPUS MARKETPLACE</span><h1 class="fw-bold mb-1">Browse Books</h1>
+        <p class="text-muted mb-0">Find affordable academic books shared by other students.</p></div>
+    @if (User.Identity?.IsAuthenticated == true)
+    {
+        <a asp-action="Create" class="btn btn-primary">+ List a Book</a>
+    }
+</div>
+<div class="row mb-3">
+    <div class="col-lg-7">
+        <label for="bookSearch" class="form-label fw-semibold">Search by title, author, or subject</label>
+        <input id="bookSearch" class="form-control form-control-lg" type="search"
+               placeholder="Try 'Database Systems' or 'Mathematics'..." autocomplete="off" />
+        <div class="form-text">Results update automatically using jQuery AJAX.</div>
+    </div>
+</div>
+<div id="liveNotice" class="alert alert-info d-none" role="status"></div>
+@Html.AntiForgeryToken()
+<div id="bookResults">
+    @await Html.PartialAsync("_BookCards", Model)
+</div>
 
-<h1>Index</h1>
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.7/signalr.min.js"></script>
+    <script>
+        $(function () {
+            const searchUrl = '@Url.Action("Search", "Books")';
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Title)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Author)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Subject)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Price)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Condition)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IsAvailable)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.SellerId)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Title)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Author)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Subject)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Price)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Condition)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IsAvailable)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.SellerId)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
+            function loadBooks() {
+                $.get(searchUrl, { term: $('#bookSearch').val() })
+                    .done(function (html) { $('#bookResults').html(html); })
+                    .fail(function () {
+                        $('#bookResults').html('<div class="alert alert-danger">Could not load book listings. Please refresh.</div>');
+                    });
+            }
+            $('#bookResults').on('click', '.js-delete-book', function () {
+                if (!confirm('Delete this book listing?')) return;
+                const token = $('input[name="__RequestVerificationToken"]').first().val();
+                $.ajax({
+                    url: '@Url.Action("DeleteAjax", "Books")',
+                    method: 'POST',
+                    data: { id: $(this).data('id') },
+                    headers: { 'RequestVerificationToken': token }
+                }).done(function (response) {
+                    if (response.success) {
+                        $('#liveNotice').removeClass('d-none').text(response.message);
+                        loadBooks();
+                    }
+                }).fail(function () {
+                    $('#liveNotice').removeClass('d-none alert-info').addClass('alert-danger')
+                        .text('Could not delete this listing. Check your permissions and try again.');
+                });
+            });
+
+            let searchTimer;
+            $('#bookSearch').on('input', function () {
+                clearTimeout(searchTimer);
+                searchTimer = setTimeout(loadBooks, 250);
+            });
+
+            // SignalR notifies every open browser when a listing changes.
+            if (typeof signalR !== 'undefined') {
+                const connection = new signalR.HubConnectionBuilder()
+                    .withUrl('/bookHub')
+                    .withAutomaticReconnect()
+                    .build();
+
+                connection.on('BookChanged', function (message) {
+                    $('#liveNotice').removeClass('d-none').text(message + ' The list has been refreshed.');
+                    loadBooks();
+                });
+
+                connection.start().catch(function (error) {
+                    console.warn('Live updates are unavailable:', error);
+                });
+            }
+        });
+    </script>
 }
-    </tbody>
-</table>

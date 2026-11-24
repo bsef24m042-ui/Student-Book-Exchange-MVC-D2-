@@ -1,100 +1,58 @@
-﻿
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Student Book Exchange</title>
-
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
-
 <body>
-    <header>
-        <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
-            <div class="container">
-
-                <a class="navbar-brand fw-bold"
-                   asp-controller="Home"
-                   asp-action="Index">
-                    Student Book Exchange
-                </a>
-
-                <button class="navbar-toggler" type="button"
-                        data-bs-toggle="collapse"
-                        data-bs-target="#mainNavbar"
-                        aria-controls="mainNavbar"
-                        aria-expanded="false"
-                        aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-
-                <div class="collapse navbar-collapse" id="mainNavbar">
-
-                    <ul class="navbar-nav ms-auto">
-
-                        <li class="nav-item">
-                            <a class="nav-link text-white"
-                               asp-controller="Home"
-                               asp-action="Index">
-                                Home
-                            </a>
+<header>
+    <nav class="navbar navbar-expand-lg navbar-dark app-navbar shadow-sm">
+        <div class="container">
+            <a class="navbar-brand fw-bold" asp-controller="Home" asp-action="Index">📚 Student Book Exchange</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar"
+                    aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="mainNavbar">
+                <ul class="navbar-nav ms-auto align-items-lg-center">
+                    <li class="nav-item"><a class="nav-link" asp-controller="Home" asp-action="Index">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" asp-controller="Books" asp-action="Index">Browse Books</a></li>
+                    @if (User.Identity?.IsAuthenticated == true)
+                    {
+                        <li class="nav-item"><a class="nav-link" asp-controller="Books" asp-action="Create">Sell a Book</a></li>
+                        @if (User.IsInRole("Student")) { <li class="nav-item"><a class="nav-link" asp-controller="Books" asp-action="Mine">My Books</a></li> }
+                        @if (User.IsInRole("Admin")) { <li class="nav-item"><a class="nav-link" asp-controller="Admin" asp-action="Index">Admin</a></li> }
+                        <li class="nav-item ms-lg-2">
+                            <form asp-controller="Home" asp-action="Logout" method="post">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-sm btn-light">Logout</button>
+                            </form>
                         </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link text-white"
-                               asp-controller="Books"
-                               asp-action="Index">
-                                Browse Books
-                            </a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link text-white"
-                               asp-controller="Books"
-                               asp-action="Create">
-                                Sell a Book
-                            </a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link text-white"
-                               asp-controller="Home"
-                               asp-action="Login">
-                                Login
-                            </a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link text-white"
-                               asp-controller="Home"
-                               asp-action="Signup">
-                                Register
-                            </a>
-                        </li>
-
-                    </ul>
-
-                </div>
+                    }
+                    else
+                    {
+                        <li class="nav-item"><a class="nav-link" asp-controller="Home" asp-action="Login">Login</a></li>
+                        <li class="nav-item ms-lg-2"><a class="btn btn-sm btn-light" asp-controller="Home" asp-action="Signup">Create account</a></li>
+                    }
+                </ul>
             </div>
-        </nav>
-    </header>
-
-    <main class="container py-4">
-        @RenderBody()
-    </main>
-
-    <footer class="border-top py-3 text-muted">
-        <div class="container text-center">
-            &copy; 2026 - Student Book Exchange
         </div>
-    </footer>
-
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-
-    @await RenderSectionAsync("Scripts", required: false)
+    </nav>
+</header>
+<main class="container py-4">
+    @if (TempData["Success"] != null) { <div class="alert alert-success alert-dismissible fade show">@TempData["Success"]<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div> }
+    @if (TempData["Error"] != null) { <div class="alert alert-danger alert-dismissible fade show">@TempData["Error"]<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div> }
+    @RenderBody()
+</main>
+<footer class="border-top py-4 mt-5 text-muted">
+    <div class="container text-center small">&copy; 2026 Student Book Exchange · Buy, sell, and reuse academic books.</div>
+</footer>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="~/js/site.js" asp-append-version="true"></script>
+@await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
